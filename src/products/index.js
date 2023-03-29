@@ -18,27 +18,37 @@ productsRouter.get("/", async (req, res, next) => {
   try {
     const query = {};
     if (req.query.minPrice && req.query.maxPrice)
-      query.age = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
-    if (req.query.name) query.name = { [Op.iLike]: `%${req.query.name}%` };
-    if (req.query.description)
-      query.name = { [Op.iLike]: `%${req.query.description}%` };
+      query.price = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
+
+    // if (req.query.name) query.name = { [Op.iLike]: `%${req.query.name}%` };
+
+    // if (req.query.description)
+    //   query.description = { [Op.iLike]: `%${req.query.description}%` };
+
     if (req.query.category)
-      query.name = { [Op.iLike]: `%${req.query.category}%` };
+      query.category = { [Op.iLike]: `%${req.query.category}%` };
 
     const products = await ProductModel.findAndCountAll({
-      where: { ...query },
-
+      where: {
+        ...query,
+        ...(req.query.search && {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${req.query.search}%` } },
+            { description: { [Op.iLike]: `%${req.query.search}%` } },
+          ],
+        }),
+      },
+      limit: req.query.limit,
+      offset: req.query.offset,
       //   order: [
-      //     ["firstName", "ASC"],
-      //     ["lastName", "ASC"],
+      //     req.query.orderby
+      //       ? [
+      //           req.query.orderby,
+      //           req.query.dir ? req.query.dir.toUpperCase() : "ASC",
+      //         ]
+      //       : ["productId", req.query.dir ? req.query.dir.toUpperCase() : "ASC"],
       //   ],
     });
-    if (req.query.limit) {
-      options.limit = parseInt(req.query.limit);
-    }
-    if (req.query.offset) {
-      options.offset = parseInt(req.query.offset);
-    }
 
     res.send(products);
   } catch (error) {
