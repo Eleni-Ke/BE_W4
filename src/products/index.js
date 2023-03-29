@@ -40,14 +40,14 @@ productsRouter.get("/", async (req, res, next) => {
       },
       limit: req.query.limit,
       offset: req.query.offset,
-      //   order: [
-      //     req.query.orderby
-      //       ? [
-      //           req.query.orderby,
-      //           req.query.dir ? req.query.dir.toUpperCase() : "ASC",
-      //         ]
-      //       : ["productId", req.query.dir ? req.query.dir.toUpperCase() : "ASC"],
-      //   ],
+      order: [
+        req.query.orderby
+          ? [
+              req.query.orderby,
+              req.query.dir ? req.query.dir.toUpperCase() : "ASC",
+            ]
+          : ["id", req.query.dir ? req.query.dir.toUpperCase() : "ASC"],
+      ],
     });
 
     res.send(products);
