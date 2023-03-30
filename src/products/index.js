@@ -2,12 +2,23 @@ import express from "express";
 import createHttpError from "http-errors";
 import { Op } from "sequelize";
 import ProductModel from "./model.js";
+import ProductsCategoriesModel from "./productsCategoriesModel.js";
+import CategoriesModel from "../categories/model.js";
 
 const productsRouter = express.Router();
 
 productsRouter.post("/", async (req, res, next) => {
   try {
     const { productId } = await ProductModel.create(req.body);
+
+    if (req.body.categories) {
+      await ProductsCategoriesModel.bulkCreate(
+        req.body.categories.map((category) => {
+          return { productId: productId, categoryId: category };
+        })
+      );
+    }
+
     res.status(201).send({ productId });
   } catch (error) {
     next(error);
@@ -20,15 +31,17 @@ productsRouter.get("/", async (req, res, next) => {
     if (req.query.minPrice && req.query.maxPrice)
       query.price = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
 
-    // if (req.query.name) query.name = { [Op.iLike]: `%${req.query.name}%` };
-
-    // if (req.query.description)
-    //   query.description = { [Op.iLike]: `%${req.query.description}%` };
-
     if (req.query.category)
       query.category = { [Op.iLike]: `%${req.query.category}%` };
 
     const products = await ProductModel.findAndCountAll({
+      include: [
+        {
+          model: CategoriesModel,
+          attributes: ["name"],
+          through: { attributes: [] },
+        },
+      ],
       where: {
         ...query,
         ...(req.query.search && {
