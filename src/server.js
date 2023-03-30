@@ -11,6 +11,8 @@ import {
 } from "./errorHandlers.js";
 import usersRouter from "./users/index.js";
 import categoriesRouter from "./categories/index.js";
+import ReviewsModel from "./reviews/model.js";
+import reviewsRouter from "./reviews/index.js";
 
 const server = Express();
 const port = process.env.PORT || 3001;
@@ -23,6 +25,7 @@ server.use(Express.json());
 server.use("/products", productsRouter);
 server.use("/users", usersRouter);
 server.use("/categories", categoriesRouter);
+server.use("/products", reviewsRouter);
 
 // ***************** ERROR HANDLERS *****************
 server.use(badRequestErrorHandler);

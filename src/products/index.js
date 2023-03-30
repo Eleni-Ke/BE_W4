@@ -4,6 +4,8 @@ import { Op } from "sequelize";
 import ProductModel from "./model.js";
 import ProductsCategoriesModel from "./productsCategoriesModel.js";
 import CategoriesModel from "../categories/model.js";
+import ReviewsModel from "../reviews/model.js";
+import UsersModel from "../users/model.js";
 
 const productsRouter = express.Router();
 
@@ -40,6 +42,11 @@ productsRouter.get("/", async (req, res, next) => {
           model: CategoriesModel,
           attributes: ["name"],
           through: { attributes: [] },
+        },
+        {
+          model: ReviewsModel,
+          attributes: ["reviewId", "content", "userId"],
+          include: [{ model: UsersModel, attributes: ["name", "surname"] }],
         },
       ],
       where: {
