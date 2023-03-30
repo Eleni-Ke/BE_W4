@@ -7,8 +7,8 @@ const productsRouter = express.Router();
 
 productsRouter.post("/", async (req, res, next) => {
   try {
-    const { id } = await ProductModel.create(req.body);
-    res.status(201).send({ id });
+    const { productId } = await ProductModel.create(req.body);
+    res.status(201).send({ productId });
   } catch (error) {
     next(error);
   }
@@ -80,7 +80,7 @@ productsRouter.put("/:productId", async (req, res, next) => {
   try {
     const [numberOfUpdatedRows, updatedRecords] = await ProductModel.update(
       req.body,
-      { where: { id: req.params.productId }, returning: true }
+      { where: { productId: req.params.productId }, returning: true }
     );
     if (numberOfUpdatedRows === 1) {
       res.send(updatedRecords[0]);
@@ -100,7 +100,7 @@ productsRouter.put("/:productId", async (req, res, next) => {
 productsRouter.delete("/:productId", async (req, res, next) => {
   try {
     const numberOfDeletedRows = await ProductModel.destroy({
-      where: { id: req.params.productId },
+      where: { productId: req.params.productId },
     });
     if (numberOfDeletedRows === 1) {
       res.status(204).send();

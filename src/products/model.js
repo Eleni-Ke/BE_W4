@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 
 const ProductModel = sequelize.define("product", {
-  id: {
+  productId: {
     type: DataTypes.UUID,
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
