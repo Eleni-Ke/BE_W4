@@ -9,6 +9,7 @@ import {
   notFoundErrorHandler,
   genericErrorHandler,
 } from "./errorHandlers.js";
+import usersRouter from "./users/index.js";
 
 const server = Express();
 const port = process.env.PORT || 3001;
@@ -19,6 +20,7 @@ server.use(Express.json());
 
 // ***************** ENDPOINTS *****************
 server.use("/products", productsRouter);
+server.use("/users", usersRouter);
 
 // ***************** ERROR HANDLERS *****************
 server.use(badRequestErrorHandler);
