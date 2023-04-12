@@ -11,7 +11,6 @@ import {
 } from "./errorHandlers.js";
 import usersRouter from "./users/index.js";
 import categoriesRouter from "./categories/index.js";
-import ReviewsModel from "./reviews/model.js";
 import reviewsRouter from "./reviews/index.js";
 
 const server = Express();
